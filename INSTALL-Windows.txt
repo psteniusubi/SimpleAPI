@@ -1,0 +1,11 @@
+### Apache 2.4 VC15 Windows Binaries and Modules ###
+
+https://www.apachelounge.com/download/
+
+https://home.apache.org/~steffenal/VC15/binaries/httpd-2.4.37-win64-VC15.zip
+
+### mod_auth_openidc releases ###
+
+https://github.com/zmartzone/mod_auth_openidc/releases
+
+https://github.com/zmartzone/mod_auth_openidc/releases/download/v2.3.8/mod_auth_openidc-2.3.8-apache-2.4.x-win64.zip
