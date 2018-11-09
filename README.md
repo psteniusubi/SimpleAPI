@@ -2,7 +2,7 @@
 
 ## ASP.NET Core
 
-## Apache HTTP and (mod_auth_openidc)[https://github.com/zmartzone/mod_auth_openidc]
+## Apache HTTP and [https://github.com/zmartzone/mod_auth_openidc](mod_auth_openidc)
 
 ## Running the application
 
