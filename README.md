@@ -183,7 +183,7 @@ OIDCOAuthClientSecret secret
 
 ### OAuth 2.0 protected API handler
 
-OAuth 2.0 resaource server integration is declared with `AuthType oauth20`. 
+OAuth 2.0 resource server integration is declared with `AuthType oauth20`. 
 
 ```
 <Location "/">
