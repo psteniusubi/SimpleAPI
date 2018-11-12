@@ -4,7 +4,7 @@ Example of a simple OAuth 2.0 protected API. Token introspection is used in this
 
 There are two different solutions in this repository. One implemented with ASP.NET Core and an other implemented with Apache HTTP server and [mod_auth_openidc](https://github.com/zmartzone/mod_auth_openidc).
 
-Examples clients invoking this api are
+Examples of clients invoking this api are
 * [SimpleSPA](../../../SimpleSPA) - JavaScript Single Page application
 
 ## ASP.NET Core
