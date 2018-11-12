@@ -172,7 +172,7 @@ See also https://www.w3.org/TR/cors/
 
 ### OAuth 2.0 resource server
 
-The minial configuration of a OAuth 2.0 resource server needs token introspection endpoint and OAuth 2.0 client credentials.
+The minimal configuration of mod_auth_openidc, in OAuth 2.0 resource server mode, needs token introspection endpoint and OAuth 2.0 client credentials.
 
 ```
 OIDCOAuthIntrospectionEndpoint https://login.example.ubidemo.com/uas/oauth2/introspection
