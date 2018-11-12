@@ -24,7 +24,7 @@ namespace SimpleAPI
                     builder => builder
                         .AllowAnyOrigin()
                         .AllowAnyMethod()
-                        .AllowAnyHeader()
+                        .WithHeaders(HeaderNames.Authorization)
                         .WithExposedHeaders(HeaderNames.WWWAuthenticate));
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

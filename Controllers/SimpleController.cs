@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using SimpleAPI.OIDC;
 
 namespace SimpleAPI.Controllers
@@ -8,7 +9,7 @@ namespace SimpleAPI.Controllers
     public class SimpleController : ControllerBase
     {
         [HttpGet]
-        public IActionResult Index([FromHeader(Name = "Authorization")] string authorization)
+        public IActionResult Index([FromHeader(Name = HeaderNames.Authorization)] string authorization)
         {
             if (Client.TryValidateAuthorization(authorization, out var introspection))
             {

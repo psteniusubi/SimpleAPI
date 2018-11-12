@@ -72,7 +72,7 @@ namespace SimpleAPI.OIDC
                 return false;
             }
             AuthenticationHeaderValue header = AuthenticationHeaderValue.Parse(authorization);
-            if (header == null || string.IsNullOrWhiteSpace(header.Parameter))
+            if (header == null || string.IsNullOrWhiteSpace(header.Parameter) || "Bearer" != header.Scheme)
             {
                 return false;
             }
