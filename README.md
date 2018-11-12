@@ -197,6 +197,8 @@ Alias /simple ${InstanceRoot}/hello.json
 
 ## Running the application
 
+This application is ready to run with Ubisecure SSO at login.example.ubidemo.com.
+
 ### With ASP.NET Core
 
 1. Clone this repository
