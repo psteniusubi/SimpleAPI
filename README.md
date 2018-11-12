@@ -154,6 +154,10 @@ Here the introspection request is invoked and the response is returned as a `Jso
 
 ### CORS setup
 
+The following detects CORS simple request and CORS preflight request. For both CORS requests the `Access-Control-Allow-Origin` and `Access-Control-Expose-Headers` response headers are set. For preflight request in addition the `Access-Control-Allow-Headers` header is set and a `204 No Content` response is sent.
+
+See also https://www.w3.org/TR/cors/
+
 ```
 <If "-n %{HTTP:Origin}">
     Header always set Access-Control-Allow-Origin "*"
@@ -168,6 +172,8 @@ Here the introspection request is invoked and the response is returned as a `Jso
 
 ### OAuth 2.0 resource server
 
+The minial configuration of a OAuth 2.0 resource server needs token introspection endpoint and OAuth 2.0 client credentials.
+
 ```
 OIDCOAuthIntrospectionEndpoint https://login.example.ubidemo.com/uas/oauth2/introspection
 
@@ -176,6 +182,8 @@ OIDCOAuthClientSecret secret
 ```
 
 ### OAuth 2.0 protected API handler
+
+OAuth 2.0 resaource server integration is declared with `AuthType oauth20`. 
 
 ```
 <Location "/">
@@ -192,8 +200,16 @@ Alias /simple ${InstanceRoot}/hello.json
 
 ### With ASP.NET Core
 
-1. `dotnet run`
+1. Clone this repository
+1. Install ASP.NET Core runtime from https://www.microsoft.com/net/download
+1. Use `dotnet run` to run the SimpleAPI application
+1. Use a client to invoke the API
 
 ### With Apache HTTP server
 
-1. `run-apache.cmd` or `./run-apache.sh`
+1. Clone this repository
+1. Install Apache HTTP server
+1. Install mod_auth_openidc from https://github.com/zmartzone/mod_auth_openidc/releases
+1. Use `run-apache.cmd` on Windows or `./run-apache.sh` on Linux to start Apache HTTP server
+1. Use a client to invoke the API
+
