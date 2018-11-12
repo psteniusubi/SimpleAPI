@@ -162,7 +162,6 @@ See also https://www.w3.org/TR/cors/
 <If "-n %{HTTP:Origin}">
     Header always set Access-Control-Allow-Origin "*"
     Header always set Access-Control-Expose-Headers "WWW-Authenticate"
-    #Header always set Access-Control-Max-Age "0"
     <If "%{REQUEST_METHOD} == 'OPTIONS' && -n %{HTTP:Access-Control-Request-Method}">
         Header always set Access-Control-Allow-Headers "Authorization"
         Redirect 204
@@ -172,7 +171,7 @@ See also https://www.w3.org/TR/cors/
 
 ### OAuth 2.0 resource server
 
-The minimal configuration of mod_auth_openidc, in OAuth 2.0 resource server mode, needs token introspection endpoint and OAuth 2.0 client credentials.
+A minimal configuration of mod_auth_openidc, in OAuth 2.0 resource server mode, needs token introspection endpoint and OAuth 2.0 client credentials.
 
 ```
 OIDCOAuthIntrospectionEndpoint https://login.example.ubidemo.com/uas/oauth2/introspection
