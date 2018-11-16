@@ -108,7 +108,7 @@ namespace SimpleAPI.OIDC
                         var bearer = "Bearer";
                         if (!string.IsNullOrWhiteSpace(Scope) && Scope != "openid")
                         {
-                            bearer += " realm=\"" + Scope + "\"";
+                            bearer += " realm=\"" + Scope + "\",";
                             bearer += " scope=\"openid " + Scope + "\"";
                         }
                         else
