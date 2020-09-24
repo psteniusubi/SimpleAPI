@@ -1,6 +1,5 @@
-bin/*
-obj/*
-logs/*
-.vs/*
+.vs
 *.csproj.user
 /Apache/logs
+/*/obj
+/*/bin
