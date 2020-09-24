@@ -3,3 +3,4 @@ obj/*
 logs/*
 .vs/*
 *.csproj.user
+/Apache/logs
