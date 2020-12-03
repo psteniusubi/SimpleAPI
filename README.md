@@ -29,9 +29,9 @@ An OAuth 2.0 Client needs to be configured with information about the OAuth Prov
 ### Code review
 
 Most of the project was generated with Visual Studio. The relevant new or modified files are
-* [Startup.cs](Startup.cs)
-* [SimpleController.cs](Controllers/SimpleController.cs)
-* [IntrospectionClient.cs](OIDC/IntrospectionClient.cs)
+* [Startup.cs](SimpleAPI/Startup.cs)
+* [SimpleController.cs](SimpleAPI/Controllers/SimpleController.cs)
+* [IntrospectionClient.cs](SimpleAPI/OIDC/IntrospectionClient.cs)
 
 This implementation shows what steps are required to create an OAuth 2.0 protected API. A real world application should re-factor token introspection into a middleware component and implement caching of introspection results to improve performance.
 
