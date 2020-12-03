@@ -7,22 +7,39 @@ There are two different solutions in this repository. One implemented with ASP.N
 Examples of clients invoking this api are
 * [SimpleSPA](../../../SimpleSPA) - JavaScript Single Page application
 
-## ASP.NET Core
+## Configuration
 
-The project was generated with Visual Studio 2017. The relevant modified files are
+An OAuth 2.0 Client needs to be configured with information about the OAuth Provider and client credentials. This sample app puts these configuration items into appsettings.json file as properties of `OAuth2` key:
+
+* `issuer` - name of OAuth Provider
+* `client_id` and `client_secret` - client credentials registered with OAuth Provider
+
+```json
+{
+  "OAuth2": {
+    "issuer": "https://login.example.ubidemo.com/uas",
+    "client_id": "api",
+    "client_secret": "secret"
+  }
+}  
+```
+
+## Code review
+
+Most of the project was generated with Visual Studio. The relevant new or modified files are
 * [Startup.cs](Startup.cs)
-* [Client.cs](OIDC/Client.cs)
 * [SimpleController.cs](Controllers/SimpleController.cs)
+* [IntrospectionClient.cs](OIDC/IntrospectionClient.cs)
 
 This implementation shows what steps are required to create an OAuth 2.0 protected API. A real world application should re-factor token introspection into a middleware component and implement caching of introspection results to improve performance.
 
-### CORS setup
-
-I'm using the [CORS middleware](https://docs.microsoft.com/en-us/aspnet/core/security/cors) of ASP.NET Core for setting the necessary CORS headers.
+### Startup.cs
 
 ```c#
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient<HttpClient>();
+            services.AddSingleton<IntrospectionClient>();
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -32,39 +49,45 @@ I'm using the [CORS middleware](https://docs.microsoft.com/en-us/aspnet/core/sec
                         .WithHeaders(HeaderNames.Authorization)
                         .WithExposedHeaders(HeaderNames.WWWAuthenticate));
             });
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddControllers();
         }
-```
+```        
 
 ```c#
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseRouting();
             app.UseCors();
-            app.UseMvc();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
 ```
 
-Note that `AddCors` and `UseCors` must appear before `AddMvc` and `UseMvc`.
-
-### API controller
-
-The API method invokes `Client.TryValidateAuthorization` with the HTTP Authorization request header. If validation fails then `Client.BearerToken` is invoked to send a 401 response with a WWW-Authenticate response header.
+### SimpleController.cs
 
 ```c#
     [Route("simple")]
     [ApiController]
     public class SimpleController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult Index([FromHeader(Name = HeaderNames.Authorization)] string authorization)
+        public IntrospectionClient Client { get; }
+        public SimpleController(IntrospectionClient client)
         {
-            if (Client.TryValidateAuthorization(authorization, out var introspection))
+            Client = client;
+        }
+        [HttpGet]
+        public async Task<IActionResult> Index([FromHeader(Name = "Authorization")] string authorization)
+        {
+            var introspection = await Client.ValidateAuthorization(authorization);
+            if (introspection != null)
             {
-                var sub = (string)introspection["sub"];
+                var sub = introspection.Subject;
                 var obj = new
                 {
                     hello = sub
@@ -73,80 +96,76 @@ The API method invokes `Client.TryValidateAuthorization` with the HTTP Authoriza
             }
             else
             {
-                return Client.BearerToken(Client.API_CLIENT.ClientId);
+                return new BearerTokenResult(Client.ClientId);
             }
         }
     }
 ```
 
-### OAuth 2.0 token introspection 
-
-The `TryValidateAuthorization` method first verifies syntax of Authorization header, then invokes token introspection and finally checks introspection response was positive by checking boolean `active` response parameter has value `true`.
+### IntrospectionClient.js 
 
 ```c#
-        public static bool TryValidateAuthorization(string authorization, out JsonObject introspection)
+        public IntrospectionClient(IConfiguration configuration, IHttpClientFactory factory)
         {
-            introspection = null;
-            if (string.IsNullOrWhiteSpace(authorization))
-            {
-                return false;
-            }
-            AuthenticationHeaderValue header = AuthenticationHeaderValue.Parse(authorization);
-            if (header == null || string.IsNullOrWhiteSpace(header.Parameter) || "Bearer" != header.Scheme)
-            {
-                return false;
-            }
-            var task = Client.InvokeIntrospectionRequest(header.Parameter);
-            task.Wait();
-            if (task.IsCompletedSuccessfully && task.Result["active"])
-            {
-                introspection = task.Result;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            var section = configuration.GetSection("OAuth2");
+            if (section == null) throw new ApplicationException($"{nameof(IntrospectionClient)}: Missing configuration OAuth2");
+            Issuer = section.GetValue<string>("issuer");
+            ClientId = section.GetValue<string>("client_id");
+            ClientSecret = section.GetValue<string>("client_secret");
+            Http = factory.CreateClient();
         }
 ```
 
-This method returns the OAuth 2.0 provider metadata as a `JsonObject`
-
 ```c#
-        public static async Task<JsonObject> GetConfiguration(string issuer = ISSUER)
+        public async Task<OpenIDConfigurationModel> GetConfiguration()
         {
-            return await Http
-                .GetStringAsync(issuer + "/.well-known/openid-configuration")
-                .ContinueWith(task => JsonValue.Parse(task.Result) as JsonObject);
+            var stream = await Http.GetStreamAsync(Issuer + "/.well-known/openid-configuration");
+            return await JsonSerializer.DeserializeAsync<OpenIDConfigurationModel>(stream);
         }
 ```
 
-Here we create the OAuth 2.0 introspection request. 
-
 ```c#
-        public static HttpRequestMessage NewIntrospectionRequest(string introspectionEndpoint, string token)
+        public HttpRequestMessage NewIntrospectionRequest(string introspectionEndpoint, string token)
         {
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, introspectionEndpoint);
-            httpRequest.Headers.Authorization = NewHttpBasic(API_CLIENT.ClientId, API_CLIENT.ClientSecret);
-            var introspectionRequest = new Dictionary<string, string>();
-            introspectionRequest["token"] = token;
+            httpRequest.Headers.Authorization = NewBasicAuthenticationHeader(ClientId, ClientSecret);
+            var introspectionRequest = new Dictionary<string, string>
+            {
+                ["token"] = token
+            };
             httpRequest.Content = new FormUrlEncodedContent(introspectionRequest);
             return httpRequest;
         }
 ```
 
-Here the introspection request is invoked and the response is returned as a `JsonObject`.
-
 ```c#
-        public static async Task<JsonObject> InvokeIntrospectionRequest(string token)
+        public async Task<IntrospectionResponseModel> InvokeIntrospectionRequest(string token)
         {
             var metadata = await GetConfiguration();
-            var httpRequest = NewIntrospectionRequest(metadata["introspection_endpoint"], token);
-            var introspectionResponse = await Http.SendAsync(httpRequest)
-                .ContinueWith(task => task.Result.Content.ReadAsStringAsync())
-                .Unwrap()
-                .ContinueWith(task => JsonValue.Parse(task.Result) as JsonObject);
-            return introspectionResponse;
+            var httpRequest = NewIntrospectionRequest(metadata.IntrospectionEndpoint, token);
+            var httpResponse = await Http.SendAsync(httpRequest);
+            if (!httpResponse.IsSuccessStatusCode) return default;
+            var stream = await httpResponse.Content.ReadAsStreamAsync();
+            return await JsonSerializer.DeserializeAsync<IntrospectionResponseModel>(stream);
+        }
+```
+
+```c#
+        public async Task<IntrospectionResponseModel> ValidateAuthorization(string authorization)
+        {
+            if (!TryParseBearerAuthorization(authorization, out var header))
+            {
+                return default;
+            }
+            var introspection = await InvokeIntrospectionRequest(header.Parameter);
+            if (introspection?.Active == true)
+            {
+                return introspection;
+            }
+            else
+            {
+                return default;
+            }
         }
 ```
 
