@@ -13,5 +13,22 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+- task: DotNetCoreCLI@2
+  name: 'SimpleAPI'
+  inputs:
+    command: 'publish'
+    publishWebProjects: false
+    modifyOutputPath: false
+    arguments: '--configuration $(buildConfiguration) -o $(Pipeline.Workspace)/publish/SimpleAPI'
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Pipeline.Workspace)/publish/SimpleAPI'
+    artifact: 'SimpleAPI'
+    publishLocation: 'pipeline'
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Petteri - MSDN (f70471bf-4538-41e6-a84c-679ec53940ef)'
+    appType: 'webApp'
+    WebAppName: 'ubi-simple-api'
+    packageForLinux: '$(Pipeline.Workspace)/publish/SimpleAPI/**/*.zip'
