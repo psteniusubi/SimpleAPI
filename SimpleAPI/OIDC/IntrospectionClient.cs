@@ -27,10 +27,10 @@ namespace SimpleAPI.OIDC
         public string ClientSecret { get; }
         public HttpClient Http { get; }
 
-        public async Task<OpenIDConfigurationModel> GetConfiguration()
+        public async Task<OAuth2ServerMetadataModel> GetConfiguration()
         {
-            var stream = await Http.GetStreamAsync(Issuer + "/.well-known/openid-configuration");
-            return await JsonSerializer.DeserializeAsync<OpenIDConfigurationModel>(stream);
+            var stream = await Http.GetStreamAsync(Issuer + "/.well-known/oauth-authorization-server");
+            return await JsonSerializer.DeserializeAsync<OAuth2ServerMetadataModel>(stream);
         }
 
         public AuthenticationHeaderValue NewBasicAuthenticationHeader(string username, string password)
