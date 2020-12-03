@@ -7,7 +7,9 @@ There are two different solutions in this repository. One implemented with ASP.N
 Examples of clients invoking this api are
 * [SimpleSPA](../../../SimpleSPA) - JavaScript Single Page application
 
-## ASP.NET Core Configuration
+## ASP.NET Core
+
+### Configuration
 
 An OAuth 2.0 Client needs to be configured with information about the OAuth Provider and client credentials. This sample app puts these configuration items into `appsettings.json` file as properties of `OAuth2` key:
 
@@ -24,12 +26,12 @@ An OAuth 2.0 Client needs to be configured with information about the OAuth Prov
 }  
 ```
 
-## ASP.NET Core Code review
+### Code review
 
 Most of the project was generated with Visual Studio. The relevant new or modified files are
-* [Startup.cs](Startup.cs)
-* [SimpleController.cs](Controllers/SimpleController.cs)
-* [IntrospectionClient.cs](OIDC/IntrospectionClient.cs)
+* [Startup.cs](SimpleAPI/Startup.cs)
+* [SimpleController.cs](SimpleAPI/Controllers/SimpleController.cs)
+* [IntrospectionClient.cs](SimpleAPI/OIDC/IntrospectionClient.cs)
 
 This implementation shows what steps are required to create an OAuth 2.0 protected API. A real world application should re-factor token introspection into a middleware component and implement caching of introspection results to improve performance.
 
@@ -73,7 +75,7 @@ Here I'm adding dependency injection service with `AddHttpClient` and `AddSingle
 
 ### SimpleController.cs
 
-The API controller gets `IntrospectionClient` from dependency injection. For each API request I'm validating the `Authorization` header with `Client.ValidateAuthorization`.
+The API controller gets `IntrospectionClient` from dependency injection. For each API request I'm validating the `Authorization` header with `ValidateAuthorization`.
 
 ```c#
     [Route("simple")]
@@ -106,7 +108,7 @@ The API controller gets `IntrospectionClient` from dependency injection. For eac
     }
 ```
 
-### IntrospectionClient.js 
+### IntrospectionClient.cs
 
 `IntrospectionClient` gets configuration parameters and http client from dependency injection.
 
