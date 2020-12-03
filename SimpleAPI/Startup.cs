@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
+using SimpleAPI.OIDC;
+using System.Net.Http;
 
 namespace SimpleAPI
 {
@@ -18,6 +20,8 @@ namespace SimpleAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient<HttpClient>();
+            services.AddSingleton<IntrospectionClient>();
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -27,17 +31,21 @@ namespace SimpleAPI
                         .WithHeaders(HeaderNames.Authorization)
                         .WithExposedHeaders(HeaderNames.WWWAuthenticate));
             });
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddControllers();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseRouting();
             app.UseCors();
-            app.UseMvc();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

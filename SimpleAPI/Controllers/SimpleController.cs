@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 using SimpleAPI.OIDC;
+using System.Threading.Tasks;
+using static SimpleAPI.OIDC.IntrospectionClient;
 
 namespace SimpleAPI.Controllers
 {
@@ -8,12 +9,18 @@ namespace SimpleAPI.Controllers
     [ApiController]
     public class SimpleController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult Index([FromHeader(Name = HeaderNames.Authorization)] string authorization)
+        public IntrospectionClient Client { get; }
+        public SimpleController(IntrospectionClient client)
         {
-            if (Client.TryValidateAuthorization(authorization, out var introspection))
+            Client = client;
+        }
+        [HttpGet]
+        public async Task<IActionResult> Index([FromHeader(Name = "Authorization")] string authorization)
+        {
+            var introspection = await Client.ValidateAuthorization(authorization);
+            if (introspection != null)
             {
-                var sub = (string)introspection["sub"];
+                var sub = introspection.Subject;
                 var obj = new
                 {
                     hello = sub
@@ -22,7 +29,7 @@ namespace SimpleAPI.Controllers
             }
             else
             {
-                return Client.BearerToken(Client.API_CLIENT.ClientId);
+                return new BearerTokenResult(Client.ClientId);
             }
         }
     }
