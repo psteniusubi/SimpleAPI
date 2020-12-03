@@ -7,7 +7,7 @@ There are two different solutions in this repository. One implemented with ASP.N
 Examples of clients invoking this api are
 * [SimpleSPA](../../../SimpleSPA) - JavaScript Single Page application
 
-## Configuration
+## ASP.NET Core Configuration
 
 An OAuth 2.0 Client needs to be configured with information about the OAuth Provider and client credentials. This sample app puts these configuration items into appsettings.json file as properties of `OAuth2` key:
 
@@ -24,7 +24,7 @@ An OAuth 2.0 Client needs to be configured with information about the OAuth Prov
 }  
 ```
 
-## Code review
+## ASP.NET Core Code review
 
 Most of the project was generated with Visual Studio. The relevant new or modified files are
 * [Startup.cs](Startup.cs)
@@ -214,7 +214,7 @@ OAuth 2.0 resource server integration is declared with `AuthType oauth20`.
 Alias /simple ${InstanceRoot}/hello.json
 ```
 
-## Running the application
+## Running the applications
 
 This application is ready to run with Ubisecure SSO at login.example.ubidemo.com.
 
