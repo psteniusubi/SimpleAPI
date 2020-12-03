@@ -9,7 +9,7 @@ Examples of clients invoking this api are
 
 ## ASP.NET Core Configuration
 
-An OAuth 2.0 Client needs to be configured with information about the OAuth Provider and client credentials. This sample app puts these configuration items into appsettings.json file as properties of `OAuth2` key:
+An OAuth 2.0 Client needs to be configured with information about the OAuth Provider and client credentials. This sample app puts these configuration items into `appsettings.json` file as properties of `OAuth2` key:
 
 * `issuer` - name of OAuth Provider
 * `client_id` and `client_secret` - client credentials registered with OAuth Provider
@@ -34,6 +34,8 @@ Most of the project was generated with Visual Studio. The relevant new or modifi
 This implementation shows what steps are required to create an OAuth 2.0 protected API. A real world application should re-factor token introspection into a middleware component and implement caching of introspection results to improve performance.
 
 ### Startup.cs
+
+Here I'm adding dependency injection service with `AddHttpClient` and `AddSingleton<IntrospectionClient>`. Then I use `AddCors` to setup a default CORS policy.
 
 ```c#
         public void ConfigureServices(IServiceCollection services)
@@ -71,6 +73,8 @@ This implementation shows what steps are required to create an OAuth 2.0 protect
 
 ### SimpleController.cs
 
+The API controller gets `IntrospectionClient` from dependency injection. For each API request I'm validating the `Authorization` header with `Client.ValidateAuthorization`.
+
 ```c#
     [Route("simple")]
     [ApiController]
@@ -103,6 +107,8 @@ This implementation shows what steps are required to create an OAuth 2.0 protect
 ```
 
 ### IntrospectionClient.js 
+
+`IntrospectionClient` gets configuration parameters and http client from dependency injection.
 
 ```c#
         public IntrospectionClient(IConfiguration configuration, IHttpClientFactory factory)
