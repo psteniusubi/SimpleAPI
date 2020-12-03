@@ -122,13 +122,17 @@ The API controller gets `IntrospectionClient` from dependency injection. For eac
         }
 ```
 
+This reads OAuth 2.0 Server Metadata from a well-known address
+
 ```c#
-        public async Task<OpenIDConfigurationModel> GetConfiguration()
+        public async Task<OAuth2ServerMetadataModel> GetConfiguration()
         {
-            var stream = await Http.GetStreamAsync(Issuer + "/.well-known/openid-configuration");
-            return await JsonSerializer.DeserializeAsync<OpenIDConfigurationModel>(stream);
+            var stream = await Http.GetStreamAsync(Issuer + "/.well-known/oauth-authorization-server");
+            return await JsonSerializer.DeserializeAsync<OAuth2ServerMetadataModel>(stream);
         }
 ```
+
+This creates OAuth 2.0 Token Introspection request
 
 ```c#
         public HttpRequestMessage NewIntrospectionRequest(string introspectionEndpoint, string token)
@@ -144,6 +148,8 @@ The API controller gets `IntrospectionClient` from dependency injection. For eac
         }
 ```
 
+Invoking Token Introspection request
+
 ```c#
         public async Task<IntrospectionResponseModel> InvokeIntrospectionRequest(string token)
         {
@@ -155,6 +161,8 @@ The API controller gets `IntrospectionClient` from dependency injection. For eac
             return await JsonSerializer.DeserializeAsync<IntrospectionResponseModel>(stream);
         }
 ```
+
+This method is used by API controller to validate any token in `Authorization` header
 
 ```c#
         public async Task<IntrospectionResponseModel> ValidateAuthorization(string authorization)
