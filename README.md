@@ -73,7 +73,7 @@ Here I'm adding dependency injection service with `AddHttpClient` and `AddSingle
 
 ### SimpleController.cs
 
-The API controller gets `IntrospectionClient` from dependency injection. For each API request I'm validating the `Authorization` header with `Client.ValidateAuthorization`.
+The API controller gets `IntrospectionClient` from dependency injection. For each API request I'm validating the `Authorization` header with `ValidateAuthorization`.
 
 ```c#
     [Route("simple")]
@@ -106,7 +106,7 @@ The API controller gets `IntrospectionClient` from dependency injection. For eac
     }
 ```
 
-### IntrospectionClient.js 
+### IntrospectionClient.cs
 
 `IntrospectionClient` gets configuration parameters and http client from dependency injection.
 
