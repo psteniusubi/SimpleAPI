@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SimpleAPI.OIDC;
 using System.Threading.Tasks;
-using static SimpleAPI.OIDC.IntrospectionClient;
 
 namespace SimpleAPI.Controllers
 {
