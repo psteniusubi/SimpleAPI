@@ -17,8 +17,8 @@ steps:
   name: 'SimpleAPI'
   inputs:
     command: 'publish'
-    publishWebProjects: false
-    modifyOutputPath: false
+    publishWebProjects: true
+    modifyOutputPath: true
     arguments: '--configuration $(buildConfiguration) -o $(Pipeline.Workspace)/publish/SimpleAPI'
 - task: PublishPipelineArtifact@1
   inputs:
