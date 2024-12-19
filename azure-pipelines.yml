@@ -12,6 +12,7 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
+
 steps:
 - task: DotNetCoreCLI@2
   name: 'SimpleAPI'
@@ -28,7 +29,7 @@ steps:
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
-    azureSubscription: 'Petteri - Visual Studio 2020(8945690f-dfba-4ea2-a0fa-7bb9fc3e1e1c)'
+    azureSubscription: 'Azure DevOps'
     appType: 'webApp'
     WebAppName: 'ubi-simple-api'
     packageForLinux: '$(Pipeline.Workspace)/publish/SimpleAPI/**/*.zip'
