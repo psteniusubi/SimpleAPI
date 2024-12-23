@@ -1,17 +1,23 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.Net.Http.Headers;
+using SimpleAPI.OIDC;
 
-namespace SimpleAPI
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateWebHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
-    }
-}
+builder.Services.AddCors(options => options
+    .AddDefaultPolicy(policy => policy
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .WithHeaders(HeaderNames.Authorization, HeaderNames.Accept, HeaderNames.ContentType)
+        .WithExposedHeaders(HeaderNames.WWWAuthenticate, HeaderNames.ContentType)));
+builder.Services.AddControllers();
+builder.Services.AddHttpClient<HttpClient>();
+builder.Services.AddSingleton<IntrospectionClient>();
+
+var app = builder.Build();
+
+app.UseCors();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();

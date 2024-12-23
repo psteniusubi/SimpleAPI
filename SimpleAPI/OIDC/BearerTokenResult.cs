@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 
 namespace SimpleAPI.OIDC
 {

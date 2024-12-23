@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SimpleAPI.OIDC;
-using System.Threading.Tasks;
 
 namespace SimpleAPI.Controllers
 {
@@ -33,3 +32,4 @@ namespace SimpleAPI.Controllers
         }
     }
 }
+ 
