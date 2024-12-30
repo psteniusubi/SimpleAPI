@@ -12,16 +12,16 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
-
 steps:
 - task: DotNetCoreCLI@2
-  name: 'SimpleAPI'
+  displayName: 'Build'
   inputs:
     command: 'publish'
     publishWebProjects: false
     modifyOutputPath: false
     arguments: '--configuration $(buildConfiguration) -o $(Pipeline.Workspace)/publish/SimpleAPI'
 - task: AzureRmWebAppDeployment@4
+  displayName: 'Deploy'
   inputs:
     ConnectionType: 'AzureRM'
     azureSubscription: 'Azure DevOps'
