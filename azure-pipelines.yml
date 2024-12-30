@@ -21,11 +21,6 @@ steps:
     publishWebProjects: false
     modifyOutputPath: false
     arguments: '--configuration $(buildConfiguration) -o $(Pipeline.Workspace)/publish/SimpleAPI'
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: '$(Pipeline.Workspace)/publish/SimpleAPI'
-    artifact: 'SimpleAPI'
-    publishLocation: 'pipeline'
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
