@@ -4,7 +4,6 @@
     "SimpleAPI": {
       "commandName": "Project",
       "launchBrowser": false,
-      "launchUrl": "simple",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
