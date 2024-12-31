@@ -241,15 +241,10 @@ This application is ready to run with Ubisecure SSO at login.example.ubidemo.com
 ### With ASP.NET Core
 
 1. Clone this repository
-1. Install ASP.NET Core runtime from https://www.microsoft.com/net/download
+1. Install ASP.NET Core SDK from https://www.microsoft.com/net/download
 1. Use `dotnet run` to run the SimpleAPI application
 1. Use a client to invoke the API (http://localhost:5001/simple)
 
 ### With Apache HTTP server
 
-1. Clone this repository
-1. Install Apache HTTP server
-1. Install mod_auth_openidc from https://github.com/zmartzone/mod_auth_openidc/releases
-1. Use `run-apache.cmd` on Windows or `./run-apache.sh` on Linux to start Apache HTTP server
-1. Use a client to invoke the API ((http://localhost:5001/simple)
-
+See [DOCKER.md](DOCKER.md)

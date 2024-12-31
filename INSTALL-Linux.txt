@@ -1,3 +1,0 @@
-sudo apt install apache2
-sudo add-apt-repository universe
-sudo apt install libapache2-mod-auth-openidc
