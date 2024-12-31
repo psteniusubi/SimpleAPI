@@ -19,8 +19,9 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
+    arguments: '--configuration $(buildConfiguration) -o $(Pipeline.Workspace)/publish/$(project)'
     modifyOutputPath: false
-    arguments: '$(project) --configuration $(buildConfiguration) -o $(Pipeline.Workspace)/publish/$(project)'
+    workingDirectory: '$(project)'
 - task: AzureRmWebAppDeployment@4
   displayName: 'Deploy'
   inputs:
