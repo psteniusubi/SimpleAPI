@@ -10,6 +10,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
+  project: SimpleAPI
   buildConfiguration: 'Release'
 
 steps:
@@ -19,7 +20,7 @@ steps:
     command: 'publish'
     publishWebProjects: false
     modifyOutputPath: false
-    arguments: '--configuration $(buildConfiguration) -o $(Pipeline.Workspace)/publish/SimpleAPI'
+    arguments: '$(project) --configuration $(buildConfiguration) -o $(Pipeline.Workspace)/publish/$(project)'
 - task: AzureRmWebAppDeployment@4
   displayName: 'Deploy'
   inputs:
@@ -27,4 +28,4 @@ steps:
     azureSubscription: 'Azure DevOps'
     appType: 'webApp'
     WebAppName: 'ubi-simple-api'
-    packageForLinux: '$(Pipeline.Workspace)/publish/SimpleAPI/**/*.zip'
+    packageForLinux: '$(Pipeline.Workspace)/publish/$(project)/**/*.zip'
