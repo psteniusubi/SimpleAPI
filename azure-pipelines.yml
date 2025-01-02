@@ -27,6 +27,6 @@ steps:
   inputs:
     ConnectionType: 'AzureRM'
     azureSubscription: 'Azure DevOps'
-    appType: 'webApp'
+    appType: 'webAppLinux'
     WebAppName: 'ubi-simple-api'
     packageForLinux: '$(Pipeline.Workspace)/publish/$(project)/**/*.zip'
